@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Xây dựng ứng dụng CRUD</title>
+</head>
+<style>
+    .input_student{
+        text-align: center;
+    }
+#Create{
+    color: red;
+    background-color: darkkhaki;
+    border-radius: 20%;
+}
+#search_btn{
+    color: chocolate;
+    background-color: aquamarine;
+    border-radius: 20%;
+}
+#search{
+    width: 500px;
+}
+#edit{
+    color: white;
+    background-color: blue;
+}
+#delete{
+    color: white;
+    background-color: red;
+}
+td{
+    text-align: center;
+}
+#newStudent{
+    width: 500px;
+}
+#validate{
+    color: red;
+}
+</style>
+<body>
+<div class="input_student">
+    <label id="validate"></label>
+    <p>The name student</p>
+    <label><input id="newStudent" type="text"></label>
+    <button id="Create" type="button" onclick="createStudent()">Create</button>
+    <p>search student</p>
+    <label><input id="search" type="text" oninput="listStudent[i]"></label>
+    <button id="search_btn" type="button" onclick="actionSearch()">Search</button>
+</div>
+<br>
+<div class="table_student">
+    <table id="" border="1" style="width: 100%">
+        <tr>
+            <th COLSPAN="4" style="color: blue">STUDENT MANAGE</th>
+        </tr>
+        <tr>
+            <th>STT</th>
+            <th>NAME</th>
+            <th>EDIT</th>
+            <th>DELETE</th>
+        </tr>
+        <tbody id="draw_table">
+
+        </tbody>
+    </table>
+</div>
+<script>
+    let listStudent = ['Ngân','Mến']
+    let listSearch;
+    function showListStudent(){
+        let drawTable= '';
+        for (let i = 0; i < listStudent.length; i++) {
+            // cách 1 cộng chuỗi thông thường
+            // drawTable +='<tr>'+ '<td>' +(i+1)+'</td>'+'<td>' + listStudent[i] +'</td>' + '</tr>'
+        //     cách 2 sử dụng string template
+            drawTable += `<tr>
+                            <td>${i+1}</td>
+                            <td>${listStudent[i]}</td>
+                            <td><button id="edit" onclick="updateStudent(${i})">Edit</button></td>
+                            <td><button id="delete" onclick="deleteStudent(${i})">Delete</button></td>
+                           </tr>`
+        }
+        document.getElementById('draw_table').innerHTML= drawTable;
+    }
+    showListStudent();
+    // C-Crud (CREATE)
+    function createStudent(){
+    let newStudent = document.getElementById('newStudent').value
+    if (newStudent.trim() === ''){
+        // trim chặn khoảng trắng
+        document.getElementById('validate').innerHTML = 'The name is required! Please try again!'
+    }else {
+        document.getElementById('validate').innerHTML = '<lable style = "color: blue">' + 'Create Student Success! ' + '</lable>'
+        listStudent.push(newStudent)
+        showListStudent()
+    }
+}
+    //     U-CRUD (UPDATE)
+    function updateStudent(index){
+        let updateStudent = prompt("Enter the name to update"+listStudent[index])
+        if (updateStudent.trim() === ''){
+            document.getElementById('validate').innerHTML= 'The name is required! please try again'
+        }else {
+            // check trùng tên
+            let checkExitsted=false
+            for (let i = 0; i < listStudent.length; i++) {
+                if (updateStudent===listStudent[i]){
+                    checkExitsted=true;
+                    break;
+                }
+            }
+            if (checkExitsted){
+                document.getElementById('validate').innerHTML= 'The name is existed! please try again'
+            }else {
+                document.getElementById('validate').innerHTML = '<lable style = "color: blue">' + 'Update Student Success! ' + '</lable>'
+                listStudent[index]= updateStudent;
+                showListStudent()
+            }
+        }
+    }
+    function deleteStudent(index){
+        if (confirm('Are you sure delete')){
+            document.getElementById('validate').innerHTML = '<lable style = "color: blue">' + 'Xóa thành công ' + '</lable>'
+            listStudent.splice(index,1)
+            showListStudent()
+        }else {
+            document.getElementById('validate').innerHTML = 'No delete'
+        }
+    }
+//Search
+    function actionSearch(){
+        let search =document.getElementById('search').value
+        if (search.trim()===''){
+            showListStudent()
+        }else {
+            listSearch = []
+            for (let i = 0; i < listStudent.length; i++) {
+                if (listStudent[i].toLowerCase().search(search.toLowerCase())!== -1){
+                    listSearch.push(listStudent[i])
+                }
+            }
+            showListSearch()
+        }
+    }
+    function showListSearch(){
+        let drawTable= '';
+        for (let i = 0; i < listSearch.length; i++) {
+            // cách 1 cộng chuỗi thông thường
+            // drawTable +='<tr>'+ '<td>' +(i+1)+'</td>'+'<td>' + listStudent[i] +'</td>' + '</tr>'
+            //     cách 2 sử dụng string template
+            drawTable += `<tr>
+                            <td>${i+1}</td>
+                            <td>${listSearch[i]}</td>
+                            <td><button onclick="updateStudent(${i})">Edit</button></td>
+                            <td><button onclick="deleteStudent(${i})">Delete</button></td>
+                           </tr>`
+        }
+        document.getElementById('draw_table').innerHTML= drawTable;
+    }
+</script>
+</body>
+</html>
